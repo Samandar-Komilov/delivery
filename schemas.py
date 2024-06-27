@@ -10,14 +10,8 @@ class SignupModel(BaseModel):
     is_staff: Optional[bool]
     is_active: Optional[bool]
 
-    class Config:
-        orm_mode = True
-        schema_extra = {
-            'example': {
-                'username': "mohirdev",
-                'email': "mohirdev.praktikum@gmail.com",
-                'password': "password12345",
-                'is_staff': False,
-                "is_active": True
-            }
-        }
+
+class LoginModel(BaseModel):
+    username_or_email: str
+    password: str
+
