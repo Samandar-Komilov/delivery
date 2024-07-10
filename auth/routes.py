@@ -13,7 +13,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 oauth2_dep = Annotated[str, Depends(oauth2_scheme)]
 
 
-@router.post("/register", response_model=UserInDB)
+@router.post("/register")
 async def create_new_user(user: SignupModel, db: database.Session = Depends(database.get_db)):
     db_user = crud.create_user(db, user)
     return db_user
@@ -40,4 +40,3 @@ async def login_for_access_token(
         data={'sub': user.username}, expires_delta=refresh_token_expires
     )
     return Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
-

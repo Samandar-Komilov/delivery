@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from typing import Annotated
 
 from models import User, Order
-from database import get_db
-from schemas import UserInDB, LoginModel, TokenData
+from database import get_db, session, engine
+from schemas import UserInDB, LoginModel, TokenData, OrderModel
 from utils import *
 
 
@@ -34,6 +34,18 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: Session
     return user
 
 
+async def get_admin_user(user: User = Depends(get_current_user)):
+    if user.is_staff == True:
+        return user
+    else:
+        credentials_exception = HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Not enough permissions",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+        raise credentials_exception
+
+
 def create_user(session: Session, user: LoginModel):
     existing_user = session.query(User).filter((User.username == user.username) | (User.email == user.email)).first()
     if existing_user:
@@ -42,15 +54,18 @@ def create_user(session: Session, user: LoginModel):
             detail="Username or email already registered",
         )
 
+    user_count = session.query(User).count()
+    is_staff = user_count == 0
+
     db_user = User(
         username=user.username,
         email=user.email,
         password=Hasher.get_password_hash(user.password),
-        is_active=True
+        is_active=True,
+        is_staff=is_staff
     )
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
 
     return db_user
-    

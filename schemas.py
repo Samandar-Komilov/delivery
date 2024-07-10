@@ -31,3 +31,50 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+
+
+class OrderModel(BaseModel):
+    quantity: int
+    order_status: Optional[str] = "PENDING"
+    user_id: Optional[int]
+    product_id: int
+
+    model_config = {
+        "from_attributes": True,
+        "json_schema_extra": {
+            "example": {
+                "quantity": 2,
+                "order_statuses": "PENDING",
+                "user_id": 1,
+                "product_id": 1,
+            }
+        }
+    }
+
+
+class OrderStatusModel(BaseModel):
+    order_status: Optional[str] = "PENDING"
+
+    model_config = {
+        "from_attributes": True,
+        "json_schema_extra": {
+            "example": {
+                "order_status": "PENDING"
+            }
+        }
+    }
+
+
+class ProductModel(BaseModel):
+    name: str
+    price: int
+
+    model_config = {
+        "from_attributes": True,
+        "json_schema_extra": {
+            "example": {
+                "name": "Uzbek plov",
+                "price": 30000
+            }
+        }
+    }

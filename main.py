@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 from auth.routes import router as auth_router
 from orders.routes import router as order_router
+from products.routes import router as product_router
 
 from models import User
 import crud
@@ -9,6 +10,7 @@ import crud
 app = FastAPI()
 app.include_router(auth_router)
 app.include_router(order_router)
+app.include_router(product_router)
 
 
 @app.get("/")
