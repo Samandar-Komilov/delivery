@@ -24,6 +24,6 @@ async def read_users_me(current_user: User = Depends(crud.get_current_user)):
 
 if __name__ == '__main__':
     import uvicorn
-    # from database import init_db
-    # init_db()
+    from database import init_db
+    init_db()
     uvicorn.run('main:app', reload=True)
